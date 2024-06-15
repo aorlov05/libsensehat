@@ -8,4 +8,6 @@ set(CMAKE_C_STANDARD 11)
 
 add_executable(libsensehat main.c
         framebuffer/framebuffer.c
-        framebuffer/framebuffer.h)
+        framebuffer/framebuffer.h
+        joystick/joystick.c
+        joystick/joystick.h)

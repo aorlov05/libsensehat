@@ -1,0 +1,84 @@
+#include "joystick.h"
+
+/**
+ * Takes a directory entry for an input device file and returns if it can read events
+ * @param dir_name A directory entry
+ * @return If the directory is an event device
+ */
+int is_event_device(char *dir) {
+    return strncmp(dir, "event", 5) == 0;
+}
+
+/**
+ * Takes a string representation of the full path to an input device and
+ * allocates a sense_joystick_t object with its file descriptor if it is a joystick device.
+ * If the inputted directory is not a RPi Sense Hat joystick, this returns NULL.
+ * This allocates a sense_joystick_t object which must be freed with a call to free_joystick().
+ * @param dir A path to an event device
+ * @return A sense_joystick_t object on success, NULL on failure
+ */
+sense_joystick_t *map_joystick(char *dir) {
+    int fd = open(dir, O_RDONLY);
+    if (fd < 0) {
+        fprintf(stderr, "Could not open input device file %s\n", dir);
+        return NULL;
+    }
+
+    char device_name[256];
+    // Copies the event device's name into char device_name
+    if (ioctl(fd, EVIOCGNAME(sizeof(device_name)), device_name) == -1) {
+        fprintf(stderr, "Could not read device name %s\n", dir);
+        close(fd);
+        return NULL;
+    }
+
+    if (strcmp(SENSE_JOYSTICK_NAME, device_name) != 0) {
+        close(fd);
+        return NULL;
+    }
+
+    sense_joystick_t *joystick = malloc(sizeof(sense_joystick_t));
+    joystick->fd = fd;
+    return joystick;
+}
+
+/**
+ * Searches through every event device and returns a sense_joystick_t object
+ * containing the file descriptor of the RPi Sense Hat joystick.
+ * This returns a sense_joystick_t object on success which must be freed with free_joystick().
+ * @return A sense_joystick_t object on success, NULL on failure
+ */
+sense_joystick_t *get_joystick(void) {
+    DIR *dir = opendir("/dev/input");
+    if (dir == NULL) {
+        fprintf(stderr, "Could not open /dev/input directory\n");
+        return NULL;
+    }
+
+    struct dirent *entry;
+    sense_joystick_t *joystick = NULL;
+    for (entry = readdir(dir); entry != NULL; entry = readdir(dir)) {
+        if (!is_event_device(entry->d_name)) {
+            continue;
+        }
+
+        char input_device[256];
+        snprintf(input_device, sizeof(input_device), "/dev/input/%s", entry->d_name);
+        joystick = map_joystick(input_device);
+        if (joystick != NULL) {
+            break;
+        }
+    }
+
+    closedir(dir);
+    return joystick;
+}
+
+/**
+ * Closes the file descriptor associated with the joystick and deallocates the joystick object.
+ * @param joystick The RPi Sense Hat joystick
+ */
+void free_joystick(sense_joystick_t *joystick) {
+    close(joystick->fd);
+    free(joystick);
+}

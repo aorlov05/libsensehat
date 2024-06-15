@@ -20,13 +20,13 @@ int is_framebuffer(char *dir_name) {
 sense_framebuffer_t *map_sense_hat_framebuffer(char *dir) {
     int fbfd = open(dir, O_RDWR);
     if (fbfd < 0) {
-        fprintf(stderr, "Could not open framebuffer device %s", dir);
+        fprintf(stderr, "Could not open framebuffer device %s\n", dir);
         return NULL;
     }
 
     struct fb_fix_screeninfo info;
-    if (ioctl(fbfd, FBIOGET_FSCREENINFO, &info)) {
-        fprintf(stderr, "Could not read fixed screen info with ioctl %s", dir);
+    if (ioctl(fbfd, FBIOGET_FSCREENINFO, &info) == -1) {
+        fprintf(stderr, "Could not read fixed screen info with ioctl %s\n", dir);
         goto error_exit;
     }
 
@@ -36,7 +36,7 @@ sense_framebuffer_t *map_sense_hat_framebuffer(char *dir) {
 
     sense_framebuffer_t *framebuffer = malloc(sizeof(sense_framebuffer_t));
     if (framebuffer == NULL) {
-        fprintf(stderr, "Memory allocation failed");
+        fprintf(stderr, "Memory allocation failed\n");
         goto error_exit;
     }
 
@@ -47,7 +47,7 @@ sense_framebuffer_t *map_sense_hat_framebuffer(char *dir) {
                                PROT_READ | PROT_WRITE, MAP_SHARED, fbfd, 0);
     if (framebuffer->fbdata == MAP_FAILED) {
         free(framebuffer);
-        fprintf(stderr, "Mapping ");
+        fprintf(stderr, "Mapping buffer into memory failed\n");
         goto error_exit;
     }
 
