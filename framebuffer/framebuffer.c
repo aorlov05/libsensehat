@@ -115,8 +115,8 @@ uint16_t rgb888_to_rgb565(uint8_t r, uint8_t g, uint8_t b) {
  * @param y The y position of the pixel to change
  * @param color An 16 bit representation of a color
  */
-void set_pixel(sense_framebuffer_t *framebuffer, int x, int y, uint16_t color) {
-    if (x < 0 || x >= SENSE_HAT_LENGTH || y < 0 || y >= SENSE_HAT_LENGTH) {
+void set_pixel(sense_framebuffer_t *framebuffer, uint8_t x, uint8_t y, uint16_t color) {
+    if (x >= SENSE_HAT_LENGTH || y >= SENSE_HAT_LENGTH) {
         fprintf(stderr, "Cannot set pixel outside Sense Hat bounds");
         return;
     }

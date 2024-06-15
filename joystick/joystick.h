@@ -5,6 +5,7 @@
 
 #include <dirent.h>
 #include <fcntl.h>
+#include <poll.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,6 +18,8 @@ typedef struct {
 } sense_joystick_t;
 
 sense_joystick_t *get_joystick(void);
+void read_next_joystick_event(sense_joystick_t *joystick, int timeout,
+                              void (*joystick_callback)(unsigned int event_code));
 void free_joystick(sense_joystick_t *joystick);
 
 #endif //LIBSENSEHAT_JOYSTICK_H

@@ -75,6 +75,35 @@ sense_joystick_t *get_joystick(void) {
 }
 
 /**
+ * Takes a joystick file descriptor and waits for a key press for timeout milliseconds.
+ * If the timeout is negative, this will wait for an infinite amount of time until key press.
+ * If a key is pressed, this passes the key code to the joystick_callback function.
+ * @param joystick The RPi Sense Hat joystick
+ * @param timeout How long to wait for key press in milliseconds
+ * @param joystick_callback A function that takes the pressed event code and is called on key press
+ */
+void read_next_joystick_event(sense_joystick_t *joystick, int timeout,
+                              void (*joystick_callback)(unsigned int event_code)) {
+    struct pollfd fds;
+    fds.fd = joystick->fd;
+    fds.events = POLLIN;
+    // Waits timeout time for an event, and checks if the file descriptor has returned events
+    if (poll(&fds, 1, timeout) && (fds.revents & POLLIN)) {
+        struct input_event event;
+        ssize_t input = read(joystick->fd, &event, sizeof(event));
+        if (input != sizeof(event)) {
+            fprintf(stderr, "Could not read input event %zd\n", input);
+            return;
+        }
+
+        // If key was pressed and callback function was passed in
+        if (event.type == EV_KEY && event.value == 1 && joystick_callback) {
+            joystick_callback(event.code);
+        }
+    }
+}
+
+/**
  * Closes the file descriptor associated with the joystick and deallocates the joystick object.
  * @param joystick The RPi Sense Hat joystick
  */

@@ -27,7 +27,7 @@ typedef struct {
 
 sense_framebuffer_t *get_sense_hat_framebuffer(void);
 uint16_t rgb888_to_rgb565(uint8_t red, uint8_t green, uint8_t blue);
-void set_pixel(sense_framebuffer_t *framebuffer, int x, int y, uint16_t color);
+void set_pixel(sense_framebuffer_t *framebuffer, uint8_t x, uint8_t y, uint16_t color);
 void clear_screen(sense_framebuffer_t *framebuffer);
 void free_framebuffer(sense_framebuffer_t *framebuffer);
 

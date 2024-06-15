@@ -1,6 +1,11 @@
 #include "framebuffer/framebuffer.h"
 #include "joystick/joystick.h"
 
+static int running = 1;
+int x = 0, y = 0;
+
+void joystick_callback(unsigned int code);
+
 int main(void) {
     sense_framebuffer_t *framebuffer = get_sense_hat_framebuffer();
     if (framebuffer == NULL) {
@@ -14,11 +19,41 @@ int main(void) {
         exit(1);
     }
 
-    set_pixel(framebuffer, 2, 2, rgb888_to_rgb565(255, 0, 255));
-    usleep(1000000);
+    while (running) {
+        clear_screen(framebuffer);
+        set_pixel(framebuffer, x, y, rgb888_to_rgb565(255, 0, 255));
+        read_next_joystick_event(joystick, -1, joystick_callback);
+    }
 
     clear_screen(framebuffer);
     free_framebuffer(framebuffer);
     free_joystick(joystick);
     return 0;
+}
+
+void joystick_callback(unsigned int code) {
+    switch (code) {
+        case KEY_UP:
+            printf("Up!");
+            x--;
+            break;
+        case KEY_DOWN:
+            printf("Down!");
+            x++;
+            break;
+        case KEY_LEFT:
+            printf("Left!");
+            y--;
+            break;
+        case KEY_RIGHT:
+            printf("Right!");
+            y++;
+            break;
+        case KEY_ENTER:
+            printf("Pushed in!");
+            running = 0;
+            break;
+        default:
+            printf("What is this? %d\n", code);
+    }
 }
