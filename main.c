@@ -1,5 +1,4 @@
-#include "framebuffer/framebuffer.h"
-#include "joystick/joystick.h"
+#include "include/sense.h"
 
 static int running = 1;
 int x = 0, y = 0;
@@ -34,23 +33,23 @@ int main(void) {
 void joystick_callback(unsigned int code) {
     switch (code) {
         case KEY_UP:
-            printf("Up!");
+            printf("Up!\n");
             x--;
             break;
         case KEY_DOWN:
-            printf("Down!");
+            printf("Down!\n");
             x++;
             break;
         case KEY_LEFT:
-            printf("Left!");
+            printf("Left!\n");
             y--;
             break;
         case KEY_RIGHT:
-            printf("Right!");
+            printf("Right!\n");
             y++;
             break;
         case KEY_ENTER:
-            printf("Pushed in!");
+            printf("Pushed in!\n");
             running = 0;
             break;
         default:

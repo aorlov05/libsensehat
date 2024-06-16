@@ -1,4 +1,4 @@
-#include "framebuffer.h"
+#include "../include/framebuffer.h"
 
 /**
  * Takes in a directory entry for a device file and returns if it is a framebuffer

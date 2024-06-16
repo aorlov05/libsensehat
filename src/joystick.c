@@ -1,4 +1,4 @@
-#include "joystick.h"
+#include "../include/joystick.h"
 
 /**
  * Takes a directory entry for an input device file and returns if it can read events
