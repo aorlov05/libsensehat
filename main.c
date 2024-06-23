@@ -33,26 +33,26 @@ int main(void) {
 void joystick_callback(unsigned int code) {
     switch (code) {
         case KEY_UP:
-            printf("Up!\n");
+            fprintf(stderr, "Up!\n");
             x--;
             break;
         case KEY_DOWN:
-            printf("Down!\n");
+            fprintf(stderr, "Down!\n");
             x++;
             break;
         case KEY_LEFT:
-            printf("Left!\n");
+            fprintf(stderr, "Left!\n");
             y--;
             break;
         case KEY_RIGHT:
-            printf("Right!\n");
+            fprintf(stderr, "Right!\n");
             y++;
             break;
         case KEY_ENTER:
-            printf("Pushed in!\n");
+            fprintf(stderr, "Pushed in!\n");
             running = 0;
             break;
         default:
-            printf("What is this? %d\n", code);
+            fprintf(stderr, "What is this? %d\n", code);
     }
 }

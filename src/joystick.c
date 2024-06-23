@@ -97,7 +97,7 @@ void read_next_joystick_event(sense_joystick_t *joystick, int timeout,
         }
 
         // If key was pressed and callback function was passed in
-        if (event.type == EV_KEY && event.value == 1 && joystick_callback) {
+        if (event.type == EV_KEY && event.value == 1 && joystick_callback != NULL) {
             joystick_callback(event.code);
         }
     }
